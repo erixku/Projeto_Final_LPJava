@@ -13,7 +13,7 @@ public class Conexao {
     static String driver = "com.mysql.cj.jdbc.Driver";
     static String url = "jdbc:mysql://localhost:3306/ideal"; // Substitua "seuBancoDeDados" pelo nome do seu banco
     static String usuario = "root"; // Substitua "seuUsuario" pelo seu usuário do banco de dados
-    static String senha = "Tr@oper5"; // Substitua "suaSenha" pela sua senha do banco de dados
+    static String senha = "root"; // Substitua "suaSenha" pela sua senha do banco de dados
     public static Connection obterConexao() {
         try {
             if (con == null) {

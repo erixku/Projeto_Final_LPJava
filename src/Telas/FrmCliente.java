@@ -212,6 +212,11 @@ public class FrmCliente extends javax.swing.JFrame {
                 "Código", "Nome", "Telefone", "Endereço", "E-mail"
             }
         ));
+        tblCli.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCliMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblCli);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -317,6 +322,11 @@ public class FrmCliente extends javax.swing.JFrame {
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
         listar();
     }//GEN-LAST:event_btnListarActionPerformed
+
+    private void tblCliMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCliMouseClicked
+        // TODO add your handling code here:
+        selecionar();
+    }//GEN-LAST:event_tblCliMouseClicked
 
     /**
      * @param args the command line arguments

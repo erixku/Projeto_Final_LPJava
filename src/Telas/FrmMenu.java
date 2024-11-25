@@ -58,6 +58,11 @@ public class FrmMenu extends javax.swing.JFrame {
         mnuAplicações.add(itmCliente);
 
         itmProduto.setText("Produto");
+        itmProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmProdutoActionPerformed(evt);
+            }
+        });
         mnuAplicações.add(itmProduto);
 
         mnbMenu.add(mnuAplicações);
@@ -83,6 +88,12 @@ public class FrmMenu extends javax.swing.JFrame {
         
         cliente.setVisible(true);
     }//GEN-LAST:event_itmClienteActionPerformed
+
+    private void itmProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmProdutoActionPerformed
+        FrmProduto produto = new FrmProduto();
+        
+        produto.setVisible(true);
+    }//GEN-LAST:event_itmProdutoActionPerformed
 
     /**
      * @param args the command line arguments

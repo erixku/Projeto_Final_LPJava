@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
+import models.ClienteModel;
+import controllers.ClienteController;
 import utils.Conexao;
 
 /**
@@ -34,87 +37,43 @@ public class FrmCliente extends javax.swing.JFrame {
         txtNome.grabFocus();
     }
     
+    ClienteController clienteController = new ClienteController();
+
     public void cadastrar(){
-        conexao = Conexao.obterConexao();
-        try{
-            String sql = "insert into cliente (nome, telefone, endereco, email) values (?,?,?,?)";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtNome.getText());
-            pst.setString(2, txtTelefone.getText());
-            pst.setString(3, txtEndereco.getText());
-            pst.setString(4, txtEmail.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso");
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar");
-        }
+        clienteController.cadastrar(txtNome.getText(), txtTelefone.getText(), txtEndereco.getText(), txtEmail.getText());
         limpar();
+        listar();
+        JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso");
     }
     
     public void listar(){
-        conexao = Conexao.obterConexao();
+        List<ClienteModel> clientes = clienteController.listar(txtPesquisa.getText());
         DefaultTableModel model = (DefaultTableModel) tblCli.getModel();
         model.setNumRows(0);
-        try{
-            String sql = "select * from cliente where nome like ?";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtPesquisa.getText()+"%");
-            rs = pst.executeQuery();
-            while(rs.next()){
-                model.addRow(new Object[]{
-                   rs.getInt("codigo"),
-                    rs.getString("nome"),
-                    rs.getString("telefone"),
-                    rs.getString("endereco"),
-                    rs.getString("email")
-                });
-            }
-            pst.close();
+        for (ClienteModel cliente : clientes){
+            model.addRow(new Object[]{
+                cliente.getCodigo(),
+                cliente.getNome(),
+                cliente.getTelefone(),
+                cliente.getEndereco(),
+                cliente.getEmail(),
+            });
         }
-        catch(Exception e){
-            txtPesquisa.setText("");
-            txtPesquisa.grabFocus();
-        }
+        txtPesquisa.setText("");
     }
     
     public void alterar(){
-        conexao = Conexao.obterConexao();
-        try{
-            String sql = "update cliente set nome=?, telefone=?, endereco=?, email=? where codigo=?";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtNome.getText());
-            pst.setString(2, txtTelefone.getText());
-            pst.setString(3, txtEndereco.getText());
-            pst.setString(4, txtEmail.getText());
-            pst.setString(5, lblCodigo.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Alterado com sucesso");
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao alterar");
-        }
+        clienteController.alterar(Integer.parseInt(lblCodigo.getText()), txtNome.getText(), txtTelefone.getText(), txtEndereco.getText(), txtEmail.getText());
         limpar();
         listar();
+        JOptionPane.showMessageDialog(this, "Alteração realizada com sucesso");
     }
     
     public void excluir(){
-        conexao = Conexao.obterConexao();
-        try{
-            String sql = "delete from cliente where codigo=?";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, lblCodigo.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Excluido com sucesso");
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao excluir");
-        }
+        clienteController.excluir(Integer.parseInt(lblCodigo.getText()));
         limpar();
         listar();
+        JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso");
     }
     
     public void selecionar(){

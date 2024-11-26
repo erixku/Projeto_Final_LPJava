@@ -5,15 +5,21 @@
  */
 package view;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableModel;
 
 import utils.Conexao;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -297,7 +303,7 @@ public class FrmProduto extends javax.swing.JFrame {
         pnlImagem = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblImagemProduto = new javax.swing.JLabel();
-        txtImagem = new javax.swing.JTextField();
+        btnImagem = new javax.swing.JButton();
         pnlBotoes = new javax.swing.JPanel();
         btnNovo = new javax.swing.JButton();
         btnAlterar = new javax.swing.JButton();
@@ -571,19 +577,28 @@ public class FrmProduto extends javax.swing.JFrame {
         lblImagemProduto.setBackground(new java.awt.Color(170, 170, 170));
         lblImagemProduto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pessoa.png"))); // NOI18N
 
-        txtImagem.setAutoscrolls(false);
+        btnImagem.setText("Nova Imagem");
+        btnImagem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImagemActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlImagemLayout = new javax.swing.GroupLayout(pnlImagem);
         pnlImagem.setLayout(pnlImagemLayout);
         pnlImagemLayout.setHorizontalGroup(
             pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImagemLayout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblImagemProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+            .addGroup(pnlImagemLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImagemLayout.createSequentialGroup()
+                        .addComponent(btnImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(pnlImagemLayout.createSequentialGroup()
+                        .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblImagemProduto, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                        .addGap(0, 16, Short.MAX_VALUE))))
         );
         pnlImagemLayout.setVerticalGroup(
             pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -591,10 +606,10 @@ public class FrmProduto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblImagemProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblImagemProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtImagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pnlBotoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -749,6 +764,23 @@ public class FrmProduto extends javax.swing.JFrame {
         selecionar();
     }//GEN-LAST:event_tblProdutoMouseClicked
 
+    private void btnImagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagemActionPerformed
+        // TODO add your handling code here:
+       JFileChooser chooser = new JFileChooser();
+       chooser.showOpenDialog(null);
+       File f = chooser.getSelectedFile();
+       String path = f.getAbsolutePath();
+       try{
+            BufferedImage bi = ImageIO.read(new File(path));
+            Image img = bi.getScaledInstance(140, 140, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(img);
+            lblImagemProduto.setIcon(icon);
+       }catch (IOException ex){
+           System.out.println("ERRO: " + ex.toString());
+           
+       }
+    }//GEN-LAST:event_btnImagemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -788,6 +820,7 @@ public class FrmProduto extends javax.swing.JFrame {
     private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnApagar;
     private javax.swing.JButton btnAtualizar;
+    private javax.swing.JButton btnImagem;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnNovo;
@@ -823,7 +856,6 @@ public class FrmProduto extends javax.swing.JFrame {
     private javax.swing.JTextField txtEstqMaximo;
     private javax.swing.JTextField txtEstqMinimo;
     private javax.swing.JTextField txtFatorLucro;
-    private javax.swing.JTextField txtImagem;
     private javax.swing.JTextField txtNCM;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtPrecoCompra;

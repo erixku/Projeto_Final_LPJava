@@ -8,6 +8,7 @@ package view;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import utils.Conexao;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controllers.ProdutoController;
 import java.sql.Date;
@@ -127,20 +129,22 @@ public class FrmProduto extends javax.swing.JFrame {
         int selectedRow = tblProduto.getSelectedRow();
         String codigo = tblProduto.getValueAt(selectedRow, 0).toString();
         try {         
-            String sql = "SELECT * FROM produto WHERE cod=?";
+            String sql = "SELECT imagem FROM produto WHERE cod=?";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, codigo);
             rs = pst.executeQuery();
             if(rs.next()){
-                Blob imagem = rs.getBlob(15);
-                String img = produtoModel.getCaminho();
-                byte [] bytea = imagem.getBytes(1, (int)imagem.length());
-                FileOutputStream fos = new FileOutputStream(img);
-                fos.write(bytea);
-                ImageIcon icon = new ImageIcon(bytea);
-                produtoModel.setCaminho(img);
-                lblImagemProduto.setIcon(icon);
+                byte[] fotoBytes = rs.getBytes("imagem");
+                if(fotoBytes != null){
+                    ImageIcon fotoIcon = new ImageIcon(fotoBytes);
+                    Image imagem = fotoIcon.getImage();
+                    Image imagemRed = imagem.getScaledInstance(150, 150, Image.SCALE_DEFAULT);
+
+                    lblImagemProduto.setIcon(new ImageIcon(imagemRed));
+                }
             }
+            rs.close();
+            pst.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro de SQL: " + e.getMessage());
         } catch (NullPointerException e) {
@@ -693,18 +697,29 @@ public class FrmProduto extends javax.swing.JFrame {
     private void btnImagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagemActionPerformed
         // TODO add your handling code here:
        JFileChooser chooser = new JFileChooser();
-       chooser.showOpenDialog(null);
-       File f = chooser.getSelectedFile();
-       path = f.getAbsolutePath();
-       try{
-            BufferedImage bi = ImageIO.read(new File(path));
-            Image img = bi.getScaledInstance(150, 156, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(img);
-            lblImagemProduto.setIcon(icon);
-       }catch (IOException ex){
-           System.out.println("ERRO: " + ex.toString());
-           
-       }
+       chooser.setDialogTitle("Escolha uma imagem");
+
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de imagem", "jpg", "png", "gif", "jpeg");
+        chooser.setFileFilter(filtro);
+
+        int result = chooser.showOpenDialog(null);
+        if(resultado == JFileChooser.APPROVE_OPTION){
+            File imagem = chooser.getSelectedFile();
+            path = imagem.getAbsolutePath();
+            try{
+                FileInputStream fis = new FileInputStream(imagem);
+
+                produtoController.inserirImagem(fis, (int) imagem.length());
+
+                ImageIcon icon = new ImageIcon(path);
+                lblImagemProduto.setIcon(icon);
+                lblImagemProduto.repaint();
+            }catch (IOException ex){
+                System.out.println("ERRO: " + ex.toString());
+                
+            }            
+        }
+
     }//GEN-LAST:event_btnImagemActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed

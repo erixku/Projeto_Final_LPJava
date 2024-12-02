@@ -42,7 +42,7 @@ public class ProdutoDAO {
         System.out.println(String.format("%.2f", percFator));
         
         try{
-            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro, imagem) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, produto.getCod());
             pst.setString(2, produto.getStatus());
@@ -57,8 +57,7 @@ public class ProdutoDAO {
             pst.setString(11, produto.getNcm());
             pst.setFloat(12, percFator);
             pst.setString(13, produto.getData_cadastro().toString());
-            
-            //pst.setBytes(14, convertIconToByte(produto.getImagem()));
+            pst.setBinaryStream(14, produto.getImagem(), produto.getTamanho());
             pst.execute();
             pst.close();
             JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso");
@@ -115,7 +114,7 @@ public class ProdutoDAO {
             pst.setString(10, produto.getNcm());
             pst.setFloat(11, produto.getFator());
             pst.setDate(12, produto.getData_cadastro());
-            pst.setBytes(13, convertIconToByte(produto.getImagem()));
+            pst.setBinaryStream(13, produto.getImagem(), produto.getTamanho());
             pst.setString(14, produto.getCod());
             pst.execute();
             pst.close();
@@ -137,15 +136,5 @@ public class ProdutoDAO {
         } catch(Exception e){
             JOptionPane.showMessageDialog(null, "Erro ao excluir");
         }
-    }
-    
-    public byte[] convertIconToByte(Icon imagem) throws IOException, SQLException{
-        ImageIcon icon = new ImageIcon(produto.getCaminho());
-        
-        BufferedImage image = (BufferedImage) ((ImageIcon) imagem).getImage();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", baos);
-        byte[] bytes = baos.toByteArray();
-        return baos.toByteArray();
     }
 }

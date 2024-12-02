@@ -2,6 +2,7 @@ package models;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -16,8 +17,8 @@ public class ProdutoModel {
     private Date data_cadastro;
     private float fator, preco_compra, preco_venda;
     private long bar_code;
-    private int qtd_estoque, estoque_maximo, estoque_minimo;
-    private Icon imagem;
+    private int qtd_estoque, estoque_maximo, estoque_minimo, tamanho;
+    private FileInputStream imagem;
     
     public String getCod() {
         return cod;
@@ -97,10 +98,10 @@ public class ProdutoModel {
     public void setEstoque_minimo(int estoque_minimo) {
         this.estoque_minimo = estoque_minimo;
     }
-    public Icon getImagem() {
+    public FileInputStream getImagem() {
         return imagem;
     }
-    public void setImagem(Icon imagem) {
+    public void setImagem(FileInputStream imagem) {
          this.imagem = imagem;
     }
     public String getCaminho() {
@@ -108,5 +109,12 @@ public class ProdutoModel {
     }
     public void setCaminho(String caminho) {
         this.caminho = caminho;
+    }
+
+    public int getTamanho(){
+        return tamanho;
+    }
+    public void setTamanho(int tamanho){
+        this.tamanho = tamanho;
     }
 }

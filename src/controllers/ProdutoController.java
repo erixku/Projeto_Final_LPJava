@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import java.io.FileInputStream;
 import java.sql.Blob;
 import java.sql.Date;
 
@@ -55,5 +56,10 @@ public class ProdutoController {
 
     public void excluir(String codigo){
         produtoDAO.excluir(codigo);
+    }
+
+    public void inserirImagem(FileInputStream imagem, int tamanho){
+        ProdutoModel produto = new ProdutoModel();
+        produto.setImagem(imagem);
     }
 }

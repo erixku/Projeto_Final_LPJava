@@ -50,7 +50,7 @@ public class FrmProduto extends javax.swing.JFrame {
     PreparedStatement pst;
     ResultSet rs;
     String path;
-
+    
     ProdutoController produtoController = new ProdutoController();
     
     
@@ -73,7 +73,7 @@ public class FrmProduto extends javax.swing.JFrame {
     }
     
     public void cadastrar(){
-        produtoController.cadastrar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
+        produtoController.cadastrar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path);
         limpar();
         System.out.println(dchDataCadastro.getDateFormatString());
     }
@@ -100,7 +100,7 @@ public class FrmProduto extends javax.swing.JFrame {
     }
     
     public void alterar(){
-        produtoController.alterar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
+        produtoController.alterar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path);
         limpar();
         listar();
     }
@@ -708,7 +708,6 @@ public class FrmProduto extends javax.swing.JFrame {
             path = imagem.getAbsolutePath();
             try{
                 FileInputStream fis = new FileInputStream(imagem);
-
                 produtoController.inserirImagem(fis, (int) imagem.length());
 
                 ImageIcon icon = new ImageIcon(path);

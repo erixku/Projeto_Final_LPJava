@@ -42,7 +42,7 @@ public class ProdutoDAO {
         System.out.println(String.format("%.2f", percFator));
         
         try{
-            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro, imagem) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, produto.getCod());
             pst.setString(2, produto.getStatus());
@@ -57,7 +57,8 @@ public class ProdutoDAO {
             pst.setString(11, produto.getNcm());
             pst.setFloat(12, percFator);
             pst.setString(13, produto.getData_cadastro().toString());
-            pst.setBytes(14, convertIconToByte(produto.getImagem()));
+            
+            //pst.setBytes(14, convertIconToByte(produto.getImagem()));
             pst.execute();
             pst.close();
             JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso");
@@ -87,6 +88,7 @@ public class ProdutoDAO {
                 produto.setPreco_compra(rs.getFloat("preco_compra"));;
                 produto.setPreco_venda(rs.getFloat("preco_venda"));;
                 produto.setFator(rs.getFloat("fator"));
+                lista.add(produto);
             }
             pst.close();
         } catch(Exception e){

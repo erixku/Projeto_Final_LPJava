@@ -71,7 +71,7 @@ public class FrmProduto extends javax.swing.JFrame {
     }
     
     public void cadastrar(){
-        produtoController.cadastrar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString().substring(1,1), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
+        produtoController.cadastrar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
         limpar();
         System.out.println(dchDataCadastro.getDateFormatString());
     }
@@ -98,7 +98,7 @@ public class FrmProduto extends javax.swing.JFrame {
     }
     
     public void alterar(){
-        produtoController.alterar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString().substring(1,1), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
+        produtoController.alterar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString(), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
         limpar();
         listar();
     }

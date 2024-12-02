@@ -1,13 +1,23 @@
 package models;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class ProdutoModel {
-    private String cod, status, nome, descricao, ncm, data_cadastro;
+    private String cod, status, nome, descricao, ncm, caminho;
+    private Date data_cadastro;
     private float fator, preco_compra, preco_venda;
     private long bar_code;
     private int qtd_estoque, estoque_maximo, estoque_minimo;
-    private Blob imagem;
+    private Icon imagem;
     
     public String getCod() {
         return cod;
@@ -39,10 +49,10 @@ public class ProdutoModel {
     public void setNcm(String ncm) {
         this.ncm = ncm;
     }
-    public String getData_cadastro() {
+    public Date getData_cadastro() {
         return data_cadastro;
     }
-    public void setData_cadastro(String data_cadastro) {
+    public void setData_cadastro(Date data_cadastro) {
         this.data_cadastro = data_cadastro;
     }
     public float getFator() {
@@ -87,10 +97,16 @@ public class ProdutoModel {
     public void setEstoque_minimo(int estoque_minimo) {
         this.estoque_minimo = estoque_minimo;
     }
-    public Blob getImagem() {
+    public Icon getImagem() {
         return imagem;
     }
-    public void setImagem(Blob imagem) {
-        this.imagem = imagem;
+    public void setImagem(Icon imagem) {
+         this.imagem = imagem;
+    }
+    public String getCaminho() {
+        return caminho;
+    }
+    public void setCaminho(String caminho) {
+        this.caminho = caminho;
     }
 }

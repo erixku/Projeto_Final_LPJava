@@ -8,11 +8,14 @@ package view;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Blob;
 import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,12 +25,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import controllers.ProdutoController;
+import java.sql.Date;
+import models.ProdutoModel;
+
 /**
  *
  * @author Limber
  */
 public class FrmProduto extends javax.swing.JFrame {
-
+    
+    private byte[] imagem;
+    
     /**
      * Creates new form FrmProduto
      */
@@ -38,11 +47,14 @@ public class FrmProduto extends javax.swing.JFrame {
     Connection conexao;
     PreparedStatement pst;
     ResultSet rs;
+    String path;
+
+    ProdutoController produtoController = new ProdutoController();
     
     
     public void limpar(){        
         txtCodigo.setText("");
-        txtData.setText("");
+        dchDataCadastro.setDate(null);
         txtNome.setText("");
         txtQtdEstoque.setText("");
         txtDescricao.setText("");
@@ -54,102 +66,39 @@ public class FrmProduto extends javax.swing.JFrame {
         txtNCM.setText("");
         txtBarcode.setText("");
         cmbStatus.setSelectedItem("I - Inativo");
-        txtImagem.setText("");
         lblImagemProduto.setIcon(new ImageIcon(getClass().getResource("../img/pessoa.png")));
         txtCodigo.grabFocus();
     }
     
     public void cadastrar(){
-        conexao = Conexao.obterConexao();
-        
-        float precoCompra = Float.parseFloat(txtPrecoCompra.getText());
-        float precoVenda = Float.parseFloat(txtPrecoVenda.getText());
-        float percFator;
-        
-        percFator = ((precoCompra/precoVenda)-1)*-100;
-        System.out.println(String.format("%.2f", percFator));
-        
-        try{
-            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro, imagem) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtCodigo.getText());
-            pst.setString(2, cmbStatus.getSelectedItem().toString().substring(1,1));
-            pst.setString(3, txtNome.getText());
-            pst.setString(4, txtDescricao.getText());
-            pst.setInt(5, Integer.parseInt(txtQtdEstoque.getText()));
-            pst.setInt(6, Integer.parseInt(txtEstqMinimo.getText()));
-            pst.setInt(7, Integer.parseInt(txtEstqMaximo.getText()));
-            pst.setFloat(8, Float.parseFloat(txtPrecoCompra.getText()));
-            pst.setFloat(9, Float.parseFloat(txtPrecoVenda.getText()));
-            pst.setInt(10, Integer.parseInt(txtBarcode.getText()));
-            pst.setInt(11, Integer.parseInt(txtNCM.getText()));
-            pst.setFloat(12, percFator);
-            pst.setString(13, txtData.getText());
-            pst.setString(14, txtImagem.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso");
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar");
-            JOptionPane.showMessageDialog(null, "Erro: "+e);
-        }
+        produtoController.cadastrar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString().substring(1,1), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
         limpar();
+        System.out.println(dchDataCadastro.getDateFormatString());
     }
     
     public void listar(){
-        conexao = Conexao.obterConexao();
+        List<ProdutoModel> produtos = produtoController.listar();
         DefaultTableModel model = (DefaultTableModel) tblProduto.getModel();
         model.setNumRows(0);
-        try{
-            String sql = "select * from produto";
-            pst = conexao.prepareStatement(sql);
-            rs = pst.executeQuery();
-            while(rs.next()){
-                model.addRow(new Object[]{
-                    rs.getString("cod"),
-                    rs.getString("status"),
-                    rs.getString("nome"),
-                    rs.getInt("qtd_estoque"),
-                    rs.getInt("estoque_minimo"),
-                    rs.getInt("estoque_maximo"),
-                    rs.getFloat("preco_compra"),
-                    rs.getFloat("preco_venda"),
-                    rs.getFloat("fator")
-                });
-                pst.close();
-            }
-        } catch(Exception e){
-            System.out.println("Não foi posível realizar a listagem");
-            System.out.println("Erro: " + e);
-        }
+        produtos.forEach((produto) -> {
+            model.addRow(new Object[]{
+                produto.getCod(),
+                produto.getStatus(),
+                produto.getNome(),
+                produto.getQtd_estoque(),
+                produto.getEstoque_minimo(),
+                produto.getEstoque_maximo(),
+                produto.getPreco_compra(),
+                produto.getPreco_venda(),
+                produto.getFator()
+            });
+        });
+        
+        System.out.println(lblImagemProduto.getIcon());
     }
     
     public void alterar(){
-        conexao = Conexao.obterConexao();
-        try{
-            String sql = "update produto set status=?, nome=?, descricao=?, qtd_estoque=?, estoque_minimo=?, estoque_maximo=?, preco_compra=?, preco_venda=?, bar_code=?, ncm=?, fator=?, data_cadastro=?, imagem=? where cod=?";
-            pst = conexao.prepareStatement(sql);            
-            pst.setString(1, cmbStatus.getSelectedItem().toString().substring(1,1));
-            pst.setString(2, txtNome.getText());
-            pst.setString(3, txtDescricao.getText());
-            pst.setInt(4, Integer.parseInt(txtQtdEstoque.getText()));
-            pst.setInt(5, Integer.parseInt(txtEstqMinimo.getText()));
-            pst.setInt(6, Integer.parseInt(txtEstqMaximo.getText()));
-            pst.setFloat(7, Float.parseFloat(txtPrecoCompra.getText()));
-            pst.setFloat(8, Float.parseFloat(txtPrecoVenda.getText()));
-            pst.setInt(9, Integer.parseInt(txtBarcode.getText()));
-            pst.setInt(10, Integer.parseInt(txtNCM.getText()));
-            pst.setFloat(11, Float.parseFloat(txtFatorLucro.getText()));
-            pst.setString(12, txtData.getText());
-            pst.setString(13, txtImagem.getText());
-            pst.setString(14, txtCodigo.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Alterado com sucesso");
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao alterar");
-            JOptionPane.showMessageDialog(null, "Erro: " + e);
-        }
+        produtoController.alterar(txtCodigo.getText(), cmbStatus.getSelectedItem().toString().substring(1,1), txtNome.getText(), txtDescricao.getText(), Integer.parseInt(txtQtdEstoque.getText()), Integer.parseInt(txtEstqMinimo.getText()), Integer.parseInt(txtEstqMaximo.getText()), Float.parseFloat(txtPrecoCompra.getText()), Float.parseFloat(txtPrecoVenda.getText()), Integer.parseInt(txtBarcode.getText()), txtNCM.getText(), new java.sql.Date(dchDataCadastro.getDate().getTime()), path, lblImagemProduto.getIcon());
         limpar();
         listar();
     }
@@ -172,52 +121,26 @@ public class FrmProduto extends javax.swing.JFrame {
     
     public void selecionar() {
         conexao = Conexao.obterConexao();
+        ProdutoModel produtoModel = new ProdutoModel();
     
         // Verifique se a tabela tem uma linha selecionada
         int selectedRow = tblProduto.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(null, "Nenhum produto selecionado.");
-            return; // Saia do método se nenhuma linha estiver selecionada
-        }
-
-        // Preencher o campo de texto com o código do produto selecionado
-        txtCodigo.setText(tblProduto.getValueAt(selectedRow, 0).toString());
         String codigo = tblProduto.getValueAt(selectedRow, 0).toString();
-        System.out.println(codigo);
-        String img;
-        String sql = "SELECT * FROM produto WHERE cod=?";
         try {         
+            String sql = "SELECT * FROM produto WHERE cod=?";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, codigo);
             rs = pst.executeQuery();
-                        
-            try{
-                // Verifique se o ResultSet contém dados
-                if (rs.next()) {
-                    img = rs.getString("imagem");
-                    try{
-                        if (img != null) {
-                            try{
-                                // Verifique se o caminho da imagem é válido
-                                lblImagemProduto.setIcon(new ImageIcon(getClass().getResource("../img/erixku.jpg")));
-                                txtImagem.setText(img);
-                            } catch(Exception e){
-                                JOptionPane.showMessageDialog(null, "Erro na atribuição da Imagem\n" + img);
-                                
-                            }                            
-                        } else {
-                            JOptionPane.showMessageDialog(null, "A imagem do produto é null.");
-                        }
-                    } catch(Exception e){
-                        JOptionPane.showMessageDialog(null, "Erro no 2º If... Else");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nenhuma imagem encontrada para o produto.");
-                }
-            } catch (Exception e){
-                JOptionPane.showMessageDialog(null, "Erro no 1º If... Else");
+            if(rs.next()){
+                Blob imagem = rs.getBlob(15);
+                String img = produtoModel.getCaminho();
+                byte [] bytea = imagem.getBytes(1, (int)imagem.length());
+                FileOutputStream fos = new FileOutputStream(img);
+                fos.write(bytea);
+                ImageIcon icon = new ImageIcon(bytea);
+                produtoModel.setCaminho(img);
+                lblImagemProduto.setIcon(icon);
             }
-
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro de SQL: " + e.getMessage());
         } catch (NullPointerException e) {
@@ -238,8 +161,9 @@ public class FrmProduto extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Erro ao fechar recursos: " + e);
             }
         }
-
+        
         // Preencher outros campos de texto com base na linha selecionada
+        txtCodigo.setText(tblProduto.getValueAt(selectedRow, 0).toString());
         cmbStatus.setSelectedIndex(tblProduto.getValueAt(selectedRow, 1).toString().equals("I") ? 0 : 1);
         txtNome.setText(tblProduto.getValueAt(selectedRow, 2).toString());
         txtQtdEstoque.setText(tblProduto.getValueAt(selectedRow, 3).toString());
@@ -276,13 +200,13 @@ public class FrmProduto extends javax.swing.JFrame {
         lblStatus = new javax.swing.JLabel();
         cmbStatus = new javax.swing.JComboBox<>();
         lblData = new javax.swing.JLabel();
-        txtData = new javax.swing.JFormattedTextField();
         lblNome = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         txtQtdEstoque = new javax.swing.JTextField();
         lblQtdEstoque = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         lblDescricao = new javax.swing.JLabel();
+        dchDataCadastro = new com.toedter.calendar.JDateChooser();
         pnlEstoquePreco = new javax.swing.JPanel();
         txtEstqMinimo = new javax.swing.JTextField();
         lblEstqMinimo = new javax.swing.JLabel();
@@ -351,8 +275,6 @@ public class FrmProduto extends javax.swing.JFrame {
         lblData.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lblData.setText("Data de Cadastro");
 
-        txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
-
         lblNome.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lblNome.setText("Nome");
 
@@ -397,10 +319,13 @@ public class FrmProduto extends javax.swing.JFrame {
                                 .addGroup(pnlInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblStatus))
-                                .addGap(8, 8, 8)
                                 .addGroup(pnlInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblData)
-                                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(pnlInformacoesLayout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addComponent(lblData))
+                                    .addGroup(pnlInformacoesLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(dchDataCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addContainerGap())))
         );
         pnlInformacoesLayout.setVerticalGroup(
@@ -408,7 +333,6 @@ public class FrmProduto extends javax.swing.JFrame {
             .addGroup(pnlInformacoesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlInformacoesLayout.createSequentialGroup()
                         .addComponent(lblCodigo)
@@ -418,7 +342,8 @@ public class FrmProduto extends javax.swing.JFrame {
                         .addGroup(pnlInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblData)
                             .addComponent(lblStatus))
-                        .addGap(26, 26, 26)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dchDataCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlInformacoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlInformacoesLayout.createSequentialGroup()
@@ -591,14 +516,14 @@ public class FrmProduto extends javax.swing.JFrame {
             .addGroup(pnlImagemLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImagemLayout.createSequentialGroup()
-                        .addComponent(btnImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
                     .addGroup(pnlImagemLayout.createSequentialGroup()
-                        .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblImagemProduto, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-                        .addGap(0, 16, Short.MAX_VALUE))))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 16, Short.MAX_VALUE))
+                    .addGroup(pnlImagemLayout.createSequentialGroup()
+                        .addGroup(pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnImagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblImagemProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         pnlImagemLayout.setVerticalGroup(
             pnlImagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -652,6 +577,11 @@ public class FrmProduto extends javax.swing.JFrame {
         btnSair.setBackground(new java.awt.Color(38, 34, 97));
         btnSair.setForeground(new java.awt.Color(204, 204, 255));
         btnSair.setText("Sair");
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         btnAtualizar.setBackground(new java.awt.Color(38, 34, 97));
         btnAtualizar.setForeground(new java.awt.Color(204, 204, 255));
@@ -673,7 +603,7 @@ public class FrmProduto extends javax.swing.JFrame {
                     .addComponent(btnAlterar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnLimpar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                     .addComponent(btnSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -737,6 +667,7 @@ public class FrmProduto extends javax.swing.JFrame {
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
         // TODO add your handling code here:
         cadastrar();
+        listar();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
@@ -754,11 +685,6 @@ public class FrmProduto extends javax.swing.JFrame {
         calcularFator();
     }//GEN-LAST:event_txtFatorLucroMouseClicked
 
-    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-        // TODO add your handling code here:
-        listar();
-    }//GEN-LAST:event_btnAtualizarActionPerformed
-
     private void tblProdutoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProdutoMouseClicked
         // TODO add your handling code here:
         selecionar();
@@ -769,10 +695,10 @@ public class FrmProduto extends javax.swing.JFrame {
        JFileChooser chooser = new JFileChooser();
        chooser.showOpenDialog(null);
        File f = chooser.getSelectedFile();
-       String path = f.getAbsolutePath();
+       path = f.getAbsolutePath();
        try{
             BufferedImage bi = ImageIO.read(new File(path));
-            Image img = bi.getScaledInstance(140, 140, Image.SCALE_SMOOTH);
+            Image img = bi.getScaledInstance(150, 156, Image.SCALE_SMOOTH);
             ImageIcon icon = new ImageIcon(img);
             lblImagemProduto.setIcon(icon);
        }catch (IOException ex){
@@ -780,6 +706,16 @@ public class FrmProduto extends javax.swing.JFrame {
            
        }
     }//GEN-LAST:event_btnImagemActionPerformed
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+        // TODO add your handling code here:
+        listar();
+    }//GEN-LAST:event_btnAtualizarActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btnSairActionPerformed
 
     /**
      * @param args the command line arguments
@@ -826,6 +762,7 @@ public class FrmProduto extends javax.swing.JFrame {
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSair;
     private javax.swing.JComboBox<String> cmbStatus;
+    private com.toedter.calendar.JDateChooser dchDataCadastro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBarcode;
@@ -851,7 +788,6 @@ public class FrmProduto extends javax.swing.JFrame {
     private javax.swing.JTable tblProduto;
     private javax.swing.JTextField txtBarcode;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JFormattedTextField txtData;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtEstqMaximo;
     private javax.swing.JTextField txtEstqMinimo;

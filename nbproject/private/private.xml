@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/Telas/FrmCliente.java</file>
-            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/Telas/FrmProduto.java</file>
-            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/Telas/FrmMenu.java</file>
-            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/Telas/Conexao.java</file>
+            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/models/ProdutoModel.java</file>
+            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/view/FrmProduto.java</file>
+            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/controllers/ProdutoController.java</file>
+            <file>file:/C:/Users/limber/Desktop/Repositórios/Projeto_Final_LPJava/src/DAO/ProdutoDAO.java</file>
         </group>
     </open-files>
 </project-private>

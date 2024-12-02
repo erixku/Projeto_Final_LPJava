@@ -14,7 +14,7 @@ public class ProdutoController {
 
     public ProdutoController(){}
 
-    public void cadastrar(String cod, String status, String nome, String descricao, int qtd_estoque, int estoque_minimo, int estoque_maximo, float preco_compra, float preco_venda, long bar_code, String ncm, Date data, String caminho, Icon imagem) {
+    public void cadastrar(String cod, String status, String nome, String descricao, int qtd_estoque, int estoque_minimo, int estoque_maximo, float preco_compra, float preco_venda, long bar_code, String ncm, Date data, String caminho) {
         ProdutoModel produto = new ProdutoModel();
         produto.setCod(cod);
         produto.setStatus(status);
@@ -36,7 +36,7 @@ public class ProdutoController {
         return produtoDAO.listar();
     }
 
-    public void alterar(String cod, String status, String nome, String descricao, int qtd_estoque, int estoque_minimo, int estoque_maximo, float preco_compra, float preco_venda, long bar_code, String ncm, Date data, String caminho, Icon imagem) {
+    public void alterar(String cod, String status, String nome, String descricao, int qtd_estoque, int estoque_minimo, int estoque_maximo, float preco_compra, float preco_venda, long bar_code, String ncm, Date data, String caminho) {
         ProdutoModel produto = new ProdutoModel();
         produto.setCod(cod);
         produto.setStatus(status);

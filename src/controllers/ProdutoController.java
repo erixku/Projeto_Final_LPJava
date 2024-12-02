@@ -61,5 +61,6 @@ public class ProdutoController {
     public void inserirImagem(FileInputStream imagem, int tamanho){
         ProdutoModel produto = new ProdutoModel();
         produto.setImagem(imagem);
+        produto.setTamanho(tamanho);
     }
 }

@@ -5,6 +5,7 @@
  */
 package view;
 
+import DAO.ProdutoDAO;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -106,17 +107,7 @@ public class FrmProduto extends javax.swing.JFrame {
     }
     
     public void excluir(){
-        conexao = Conexao.obterConexao();
-        try{
-            String sql = "delete from produto where cod=?";
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtCodigo.getText());
-            pst.execute();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Excluido com sucesso");
-        } catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Erro ao excluir");
-        }
+        produtoController.excluir(txtCodigo.getText());
         limpar();
         listar();
     }
@@ -564,6 +555,11 @@ public class FrmProduto extends javax.swing.JFrame {
         btnApagar.setBackground(new java.awt.Color(38, 34, 97));
         btnApagar.setForeground(new java.awt.Color(204, 204, 255));
         btnApagar.setText("Apagar");
+        btnApagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApagarActionPerformed(evt);
+            }
+        });
 
         btnLimpar.setBackground(new java.awt.Color(38, 34, 97));
         btnLimpar.setForeground(new java.awt.Color(204, 204, 255));
@@ -696,6 +692,9 @@ public class FrmProduto extends javax.swing.JFrame {
 
     private void btnImagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagemActionPerformed
         // TODO add your handling code here:
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        ProdutoModel produto = new ProdutoModel();
+        
        JFileChooser chooser = new JFileChooser();
        chooser.setDialogTitle("Escolha uma imagem");
 
@@ -703,20 +702,37 @@ public class FrmProduto extends javax.swing.JFrame {
         chooser.setFileFilter(filtro);
 
         int result = chooser.showOpenDialog(null);
-        if(resultado == JFileChooser.APPROVE_OPTION){
+        if(result == JFileChooser.APPROVE_OPTION){
             File imagem = chooser.getSelectedFile();
             path = imagem.getAbsolutePath();
             try{
                 FileInputStream fis = new FileInputStream(imagem);
-                produtoController.inserirImagem(fis, (int) imagem.length());
-
-                ImageIcon icon = new ImageIcon(path);
-                lblImagemProduto.setIcon(icon);
-                lblImagemProduto.repaint();
+                System.out.println("No view: "+fis);
+                
+                conexao = Conexao.obterConexao();
+                
+                String sql = "update produto set imagem = ? where cod = ?";
+                pst = conexao.prepareStatement(sql);
+                pst.setBinaryStream(1, fis, (int) imagem.length());
+                pst.setString(2, txtCodigo.getText());
+                
+                int resultado = pst.executeUpdate();
+                if(resultado>0){
+                    JOptionPane.showMessageDialog(null, "Imagem adicionada com sucesso");
+                    ImageIcon icon = new ImageIcon(path);
+                    lblImagemProduto.setIcon(icon);
+                    lblImagemProduto.repaint();
+                } else{
+                    JOptionPane.showMessageDialog(null, "Erro ao adicionar foto, produto não encontrado");
+                }
+                pst.close();               
             }catch (IOException ex){
                 System.out.println("ERRO: " + ex.toString());
                 
-            }            
+            } catch (Exception e){
+                JOptionPane.showMessageDialog(null, "Erro ao adicionar foto: "+e.getMessage());
+                e.printStackTrace();
+            }
         }
 
     }//GEN-LAST:event_btnImagemActionPerformed
@@ -730,6 +746,11 @@ public class FrmProduto extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_btnSairActionPerformed
+
+    private void btnApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApagarActionPerformed
+        // TODO add your handling code here:
+        excluir();
+    }//GEN-LAST:event_btnApagarActionPerformed
 
     /**
      * @param args the command line arguments

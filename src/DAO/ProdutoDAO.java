@@ -30,6 +30,7 @@ public class ProdutoDAO {
     PreparedStatement pst;
     ResultSet rs;
     
+    
     ProdutoModel produto;
     public void cadastrar(ProdutoModel produto){
         conexao = Conexao.obterConexao();
@@ -38,11 +39,13 @@ public class ProdutoDAO {
         float precoVenda = produto.getPreco_venda();
         float percFator;
         
+        
+        
         percFator = ((precoCompra/precoVenda)-1)*-100;
         System.out.println(String.format("%.2f", percFator));
         
         try{
-            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro, imagem) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into produto (cod, status, nome, descricao, qtd_estoque, estoque_minimo, estoque_maximo, preco_compra, preco_venda, bar_code, ncm, fator, data_cadastro) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, produto.getCod());
             pst.setString(2, produto.getStatus());
@@ -57,7 +60,6 @@ public class ProdutoDAO {
             pst.setString(11, produto.getNcm());
             pst.setFloat(12, percFator);
             pst.setString(13, produto.getData_cadastro().toString());
-            pst.setBinaryStream(14, produto.getImagem(), produto.getTamanho());
             pst.execute();
             pst.close();
             JOptionPane.showMessageDialog(null, "Cadastro realizado com sucesso");
@@ -100,7 +102,7 @@ public class ProdutoDAO {
     public void alterar(ProdutoModel produto){
         conexao = Conexao.obterConexao();
         try{
-            String sql = "update produto set status=?, nome=?, descricao=?, qtd_estoque=?, estoque_minimo=?, estoque_maximo=?, preco_compra=?, preco_venda=?, bar_code=?, ncm=?, fator=?, data_cadastro=?, imagem=? where cod=?";
+            String sql = "update produto set status=?, nome=?, descricao=?, qtd_estoque=?, estoque_minimo=?, estoque_maximo=?, preco_compra=?, preco_venda=?, bar_code=?, ncm=?, fator=?, data_cadastro=? where cod=?";
             pst = conexao.prepareStatement(sql);            
             pst.setString(1, produto.getStatus());
             pst.setString(2, produto.getNome());
@@ -114,8 +116,7 @@ public class ProdutoDAO {
             pst.setString(10, produto.getNcm());
             pst.setFloat(11, produto.getFator());
             pst.setDate(12, produto.getData_cadastro());
-            pst.setBinaryStream(13, produto.getImagem(), produto.getTamanho());
-            pst.setString(14, produto.getCod());
+            pst.setString(13, produto.getCod());
             pst.execute();
             pst.close();
             JOptionPane.showMessageDialog(null, "Alterado com sucesso");

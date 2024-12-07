@@ -12,12 +12,12 @@ import utils.Conexao;
  *
  * @author 2830482311021
  */
-public class FrmLogin extends javax.swing.JFrame {
+public class FrmCadastro extends javax.swing.JFrame {
 
     /**
      * Creates new form frmLogin
      */
-    public FrmLogin() {
+    public FrmCadastro() {
         initComponents();
     }
 
@@ -25,9 +25,9 @@ public class FrmLogin extends javax.swing.JFrame {
     PreparedStatement pst;
     ResultSet rs;
     
-    public void logar(){
+    public void cadastrar(){
         LoginController login = new LoginController();
-        login.logar(txtLogin.getText(), txtSenha.getText());
+        login.cadastrar(txtNome.getText(), txtUsuario.getText(), txtSenha.getText());
     }
     
     public static void sair(){
@@ -45,24 +45,25 @@ public class FrmLogin extends javax.swing.JFrame {
     private void initComponents() {
 
         lblAcessoRestrito = new javax.swing.JLabel();
-        lblLogin = new javax.swing.JLabel();
-        lblSenha = new javax.swing.JLabel();
-        txtLogin = new javax.swing.JTextField();
-        txtSenha = new javax.swing.JTextField();
+        lblNome = new javax.swing.JLabel();
+        lblUsuario = new javax.swing.JLabel();
+        txtNome = new javax.swing.JTextField();
+        txtUsuario = new javax.swing.JTextField();
         btnSair = new javax.swing.JButton();
         btnEntrar = new javax.swing.JButton();
-        lblCadastro = new javax.swing.JLabel();
+        txtSenha = new javax.swing.JTextField();
+        lblSenha = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblAcessoRestrito.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lblAcessoRestrito.setText("Acesso Restrito");
 
-        lblLogin.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblLogin.setText("Login");
+        lblNome.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblNome.setText("Nome");
 
-        lblSenha.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblSenha.setText("Senha");
+        lblUsuario.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblUsuario.setText("Usu�rio");
 
         btnSair.setText("Sair");
         btnSair.addActionListener(new java.awt.event.ActionListener() {
@@ -78,13 +79,8 @@ public class FrmLogin extends javax.swing.JFrame {
             }
         });
 
-        lblCadastro.setForeground(new java.awt.Color(0, 178, 255));
-        lblCadastro.setText("N�o possui Login? Cadastre-se");
-        lblCadastro.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblCadastroMouseClicked(evt);
-            }
-        });
+        lblSenha.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblSenha.setText("Senha");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,20 +89,21 @@ public class FrmLogin extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblLogin)
+                    .addComponent(lblNome)
+                    .addComponent(lblUsuario)
                     .addComponent(lblSenha))
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCadastro)
                     .addComponent(lblAcessoRestrito)
-                    .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnSair)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnEntrar))
+                        .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,38 +112,33 @@ public class FrmLogin extends javax.swing.JFrame {
                 .addComponent(lblAcessoRestrito)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblLogin)
-                    .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblNome)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsuario)
+                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSenha)
                     .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblCadastro)
-                .addGap(22, 22, 22)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSair)
                     .addComponent(btnEntrar))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        logar();
+        cadastrar();
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         sair();
     }//GEN-LAST:event_btnSairActionPerformed
-
-    private void lblCadastroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCadastroMouseClicked
-        // TODO add your handling code here:
-        FrmCadastro cadastro = new FrmCadastro();
-        cadastro.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_lblCadastroMouseClicked
 
     /**
      * @param args the command line arguments
@@ -188,10 +180,11 @@ public class FrmLogin extends javax.swing.JFrame {
     private javax.swing.JButton btnEntrar;
     private javax.swing.JButton btnSair;
     private javax.swing.JLabel lblAcessoRestrito;
-    private javax.swing.JLabel lblCadastro;
-    private javax.swing.JLabel lblLogin;
+    private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblSenha;
-    private javax.swing.JTextField txtLogin;
+    private javax.swing.JLabel lblUsuario;
+    private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtSenha;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
+import controllers.LoginController;
 import utils.Conexao;
 
 /**
@@ -25,29 +26,8 @@ public class FrmLogin extends javax.swing.JFrame {
     ResultSet rs;
     
     public void logar(){
-        conexao = Conexao.obterConexao();
-        String sql = "select * from login" + "where usuario=? and senha=?";
-        
-        try{
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtLogin.getText());
-            pst.setString(2, txtSenha.getText());
-            rs = pst.executeQuery();
-            if(rs.next()){
-                FrmMenu menu = new FrmMenu();
-                menu.setVisible(true);
-                this.dispose();
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "Usuários ou senha inválida");
-                txtLogin.setText("");
-                txtSenha.setText("");
-                txtLogin.requestFocus();
-            }
-        }
-        catch (Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }        
+        LoginController login = new LoginController();
+        login.logar(txtLogin.getText(), txtSenha.getText());
     }
     
     public static void sair(){

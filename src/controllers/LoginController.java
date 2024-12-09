@@ -14,20 +14,12 @@ public class LoginController {
     PreparedStatement pst;
     ResultSet rs;
 
+    conexao = Conexao.obterConexao();
     LoginDAO loginDAO = new LoginDAO();
     public void logar(String senha, String usuario){
-        conexao = Conexao.obterConexao();
         LoginModel login = new LoginModel();
         login.setUsuario(usuario);
         login.setSenha(senha);
         loginDAO.logar();
-    }
-
-    public void cadastrar(String nome, String usuario, String senha){
-        LoginModel login = new LoginModel();
-        login.setNome(nome);
-        login.setUsuario(usuario);
-        login.setSenha(senha);
-        loginDAO.cadastrar();
     }
 }

@@ -51,7 +51,6 @@ public class FrmLogin extends javax.swing.JFrame {
         txtSenha = new javax.swing.JTextField();
         btnSair = new javax.swing.JButton();
         btnEntrar = new javax.swing.JButton();
-        lblCadastro = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -78,14 +77,6 @@ public class FrmLogin extends javax.swing.JFrame {
             }
         });
 
-        lblCadastro.setForeground(new java.awt.Color(0, 178, 255));
-        lblCadastro.setText("N�o possui Login? Cadastre-se");
-        lblCadastro.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblCadastroMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,7 +88,6 @@ public class FrmLogin extends javax.swing.JFrame {
                     .addComponent(lblSenha))
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCadastro)
                     .addComponent(lblAcessoRestrito)
                     .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -121,13 +111,11 @@ public class FrmLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSenha)
                     .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblCadastro)
-                .addGap(22, 22, 22)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSair)
                     .addComponent(btnEntrar))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         pack();
@@ -140,13 +128,6 @@ public class FrmLogin extends javax.swing.JFrame {
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         sair();
     }//GEN-LAST:event_btnSairActionPerformed
-
-    private void lblCadastroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCadastroMouseClicked
-        // TODO add your handling code here:
-        FrmCadastro cadastro = new FrmCadastro();
-        cadastro.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_lblCadastroMouseClicked
 
     /**
      * @param args the command line arguments
@@ -188,7 +169,6 @@ public class FrmLogin extends javax.swing.JFrame {
     private javax.swing.JButton btnEntrar;
     private javax.swing.JButton btnSair;
     private javax.swing.JLabel lblAcessoRestrito;
-    private javax.swing.JLabel lblCadastro;
     private javax.swing.JLabel lblLogin;
     private javax.swing.JLabel lblSenha;
     private javax.swing.JTextField txtLogin;
